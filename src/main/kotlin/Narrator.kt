@@ -1,23 +1,22 @@
 import java.nio.file.WatchEvent.Modifier
 import kotlin.random.Random
 import kotlin.random.nextInt
-// рассказчик
 
+/** рассказчик и его настроение*/
 var narrationModifier: (String) -> String = {it}
 
 fun narrate(
     message: String,
-    modifier: (String) -> String = {
-        narrationModifier(it)
-    }
+    modifier: (String) -> String = {narrationModifier(it)}
 ) {
     println(modifier(message))
 }
-// если есть when - то мы можем сделатьнесколько реализаций лямбда - функции?
+
+/** меняем настроение рассказчика*/
 fun changeNarrationMood() {
     val mood: String
     val modifier: (String) -> String
-        when(Random.nextInt(1..4)) {
+        when(Random.nextInt(1..5)) {
             1 -> {
                 mood = "loud"
                 modifier = {message ->
@@ -37,6 +36,20 @@ fun changeNarrationMood() {
                     "$message."
                 }
             }
+            4 -> {
+                var narrationsGiven = 0
+                mood = "like sending an itemized bill"
+                modifier = { message ->
+                    narrationsGiven++
+                    "$message.\n(I have narrated $narrationsGiven things)"
+                }
+            }
+            5 -> { // ленивое настроение
+                mood = "lazy"
+                modifier = { message ->
+                    message.substring(0, message.length / 2) + "..."
+                }
+            }
             else -> {
                 mood = "professional"
                 modifier = {message ->
@@ -48,3 +61,9 @@ fun changeNarrationMood() {
     narrationModifier = modifier
     narrate("The narrator begins to feel $mood")
 }
+
+/** Вопросы
+ * 1. если есть when, то мы можем сделать несколько реализаций лямбда - функций?
+ * 2. Почитать ро inline
+ *
+ */
